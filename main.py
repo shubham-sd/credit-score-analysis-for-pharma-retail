@@ -7,22 +7,26 @@ from streamlit_option_menu import option_menu
 from visuals import vis_1
 
 
-st.markdown("<h1 style='text-align: center; color: Red;'>Credit Score Analysis</h1><br>",
-            unsafe_allow_html=True)
+st.markdown(
+    "<h1 style='text-align: center; color: Red;'>Credit Score Analysis</h1><br>",
+    unsafe_allow_html=True,
+)
 
 
-main_options = option_menu(menu_title=None,
-                           options=['VISUALIZATION',
-                                    'What is RFM?', 'PREDICTION'],
-                           default_index=0,
-                           orientation="horizontal",
-                           icons=['map', 'question mark', 'steam'])
+main_options = option_menu(
+    menu_title=None,
+    options=["VISUALIZATION", "What is RFM?", "PREDICTION"],
+    default_index=0,
+    orientation="horizontal",
+    icons=["map", "question mark", "steam"],
+)
 
-if main_options == 'VISUALIZATION':
+if main_options == "VISUALIZATION":
     vis_1()
 
-if main_options == 'What is RFM?':
-    st.write(''' #### The RFM (*Recency, Frequency, Monetary*) model helps you generate segments based on customer behavior analysis that you can apply to your entire customer base.
+if main_options == "What is RFM?":
+    st.write(
+        """ #### The RFM (*Recency, Frequency, Monetary*) model helps you generate segments based on customer behavior analysis that you can apply to your entire customer base.
 
 You have to assign a score for each variable:
 
@@ -49,41 +53,43 @@ Second, you have to choose the suitable scale according to the size of your cust
 The minimum and maximum values for recency, frequency, and monetary will help you define the 
 intervals for each point in your scale.
 
-''')
+"""
+    )
 
 
-if main_options == 'PREDICTION':
+if main_options == "PREDICTION":
     # loading gnb model
-    gnb_model = pickle.load(open('./gnb_model', 'rb'))
+    gnb_model = pickle.load(open("./gnb_model", "rb"))
 
     # header
-    st.write('### Give the RFM (*Recency, Frequency, Monetary*) values here')
+    st.write("### Give the RFM (*Recency, Frequency, Monetary*) values here")
 
     # defining function
     def user_input_features():
-        recency = st.number_input('Enter the Recency of a customer:')
-        monetary = st.number_input('Enter the Monetary of a customer:')
-        frequency = st.number_input('Enter the Frequency of a customer:')
+        recency = st.number_input("Enter the Recency of a customer:")
+        monetary = st.number_input("Enter the Monetary of a customer:")
+        frequency = st.number_input("Enter the Frequency of a customer:")
 
-        data = {'frequency': frequency,
-                'recency': recency,
-                'monetary_value': monetary
-                }
+        data = {"frequency": frequency, "recency": recency, "monetary_value": monetary}
         features = pd.DataFrame(data, index=[0])
         return features
 
     df = user_input_features()
 
+    st.text(
+        """Depending on the level of retailers, days should be allocated. \nfor example, if the level of a retailer is Bronze(Low), fewer days should be allocated."""
+    )
+
     # prediction button
-    if st.button('Predict'):
+    if st.button("Predict"):
         # Apply model to make predictions
         prediction = gnb_model.predict(df)
 
         # # prediction
-        st.subheader('Prediction')
+        st.subheader("Prediction")
         if prediction == 2:
-            st.success('Your Customer is of level Gold (High)')
+            st.success("Your Customer is of level Gold (High)")
         elif prediction == 1:
-            st.success('Your Customer is of level Silver (Medium)')
+            st.success("Your Customer is of level Silver (Medium)")
         else:
-            st.success('Your Customer is of level Bronze (Low)')
+            st.success("Your Customer is of level Bronze (Low)")

@@ -59,31 +59,34 @@ def vis_1():
     df2 = df.sort_values(by=["recency"], ascending=False)
     df2 = df2["retailer_names"]
     st.dataframe(data=df2, width=None, height=None)
-    x = st.text_input("Enter the retailer name", "")
-    if st.button("analyse"):
-        list2 = []
-        tuple1 = tuple()
-        for j in range(df.shape[0]):
-            if df["retailer_names"][j] == x:
-                tuple1 = (
-                    x,
-                    df["recency_rank"][j],
-                    df["frequency_rank"][j],
-                    df["monetary_rank"][j],
-                )
-                break
+    try:
+        x = st.text_input("Enter the retailer name", "")
+        if st.button("analyse"):
+            list2 = []
+            tuple1 = tuple()
+            for j in range(df.shape[0]):
+                if df["retailer_names"][j] == x:
+                    tuple1 = (
+                        x,
+                        df["recency_rank"][j],
+                        df["frequency_rank"][j],
+                        df["monetary_rank"][j],
+                    )
+                    break
 
-        fig = plt.figure()
+            fig = plt.figure()
 
-        langs = ["Rencency score", "Frequency_score", "Monetary_score"]
-        students = [round(tuple1[1]), round(tuple1[2]), round(tuple1[3])]
-        sns.barplot(langs, students)
-        xlocs = [i for i in range(0, 3)]
-        plt.xticks(rotation=40)
-        for i, v in enumerate(students):
-            plt.text(xlocs[i] - 0.25, v + 0.01, str(v))
-        plt.xlabel("x")
-        plt.ylabel("y")
-        plt.title("RFM Score of " + str(tuple1[0]))
-        plt.show()
-        st.pyplot(fig)
+            langs = ["Rencency score", "Frequency_score", "Monetary_score"]
+            students = [round(tuple1[1]), round(tuple1[2]), round(tuple1[3])]
+            sns.barplot(langs, students)
+            xlocs = [i for i in range(0, 3)]
+            plt.xticks(rotation=40)
+            for i, v in enumerate(students):
+                plt.text(xlocs[i] - 0.25, v + 0.01, str(v))
+            plt.xlabel("x")
+            plt.ylabel("y")
+            plt.title("RFM Score of " + str(tuple1[0]))
+            plt.show()
+            st.pyplot(fig)
+    except:
+        st.warning("Enter valid Retailer ID")
